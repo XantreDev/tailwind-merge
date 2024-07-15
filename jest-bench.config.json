@@ -1,0 +1,9 @@
+{
+    "preset": "ts-jest",
+    "transform": {
+        ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "jest-bench/environment",
+    "reporters": ["default", ["jest-bench/reporter", { "withOpsPerSecond": true }]],
+    "testRegex": "(/tests/.*|\\.bench)\\.(ts|tsx|js)$"
+}

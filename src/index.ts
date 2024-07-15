@@ -1,4 +1,4 @@
-export { createTailwindMerge } from './lib/create-tailwind-merge'
+export { createTailwindMerge, createTailwindMerge2 } from './lib/create-tailwind-merge'
 export { getDefaultConfig } from './lib/default-config'
 export { extendTailwindMerge } from './lib/extend-tailwind-merge'
 export { fromTheme } from './lib/from-theme'
