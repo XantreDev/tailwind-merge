@@ -35,10 +35,10 @@ const tailwindMerge2 = createTailwindMerge2(() => ({
 
 benchmarkSuite('createTailwindMerge', {
     setup() {},
-    ['v1']: () => {
+    'v1': () => {
         tailwindMerge('my-modifier:fooKey-bar my-modifier:fooKey-baz')
     },
-    ['v2']: () => {
+    'v2': () => {
         tailwindMerge2('my-modifier:fooKey-bar my-modifier:fooKey-baz')
     },
 })

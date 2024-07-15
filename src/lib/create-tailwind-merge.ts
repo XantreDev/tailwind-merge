@@ -13,7 +13,7 @@ export function createTailwindMerge(
     ...createConfigRest: CreateConfigSubsequent[]
 ): TailwindMerge {
     let configUtils: ConfigUtils
-    let cacheGet: ConfigUtils['cache']['get']
+    // let cacheGet: ConfigUtils['cache']['get']
     let cacheSet: ConfigUtils['cache']['set']
     let functionToCall = initTailwindMerge
 
@@ -24,7 +24,7 @@ export function createTailwindMerge(
         )
 
         configUtils = createConfigUtils(config)
-        cacheGet = configUtils.cache.get
+        // cacheGet = configUtils.cache.get
         cacheSet = configUtils.cache.set
         functionToCall = tailwindMerge
 
@@ -54,7 +54,7 @@ export function createTailwindMerge2(
     ...createConfigRest: CreateConfigSubsequent[]
 ): TailwindMerge {
     let configUtils: ConfigUtils
-    let cacheGet: ConfigUtils['cache']['get']
+    // let cacheGet: ConfigUtils['cache']['get']
     let cacheSet: ConfigUtils['cache']['set']
     let functionToCall = initTailwindMerge
 
@@ -65,7 +65,7 @@ export function createTailwindMerge2(
         )
 
         configUtils = createConfigUtils(config)
-        cacheGet = configUtils.cache.get
+        // cacheGet = configUtils.cache.get
         cacheSet = configUtils.cache.set
         functionToCall = tailwindMerge
 
