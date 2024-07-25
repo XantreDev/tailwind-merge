@@ -1,5 +1,5 @@
 import { createConfigUtils } from './config-utils'
-import { mergeClassList } from './merge-classlist'
+import { mergeClassList, mergeClassList2 } from './merge-classlist'
 import { ClassNameValue, twJoin } from './tw-join'
 import { GenericConfig } from './types'
 
@@ -25,7 +25,7 @@ export function createTailwindMerge(
 
         configUtils = createConfigUtils(config)
         // cacheGet = configUtils.cache.get
-        cacheSet = configUtils.cache.set
+        // cacheSet = configUtils.cache.set
         functionToCall = tailwindMerge
 
         return tailwindMerge(classList)
@@ -39,7 +39,7 @@ export function createTailwindMerge(
         // }
 
         const result = mergeClassList(classList, configUtils)
-        cacheSet(classList, result)
+        // cacheSet(classList, result)
 
         return result
     }
@@ -66,7 +66,7 @@ export function createTailwindMerge2(
 
         configUtils = createConfigUtils(config)
         // cacheGet = configUtils.cache.get
-        cacheSet = configUtils.cache.set
+        // cacheSet = configUtils.cache.set
         functionToCall = tailwindMerge
 
         return tailwindMerge(classList)
@@ -79,8 +79,8 @@ export function createTailwindMerge2(
         //     return cachedResult
         // }
 
-        const result = mergeClassList(classList, configUtils)
-        cacheSet(classList, result)
+        const result = mergeClassList2(classList, configUtils)
+        // cacheSet(classList, result)
 
         return result
     }

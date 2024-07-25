@@ -13,14 +13,17 @@ export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
      * @example 'hover:focus:bg-color'
      * @example 'md:!pr'
      */
-    const classGroupsInConflict = new Set<string>()
+    const classGroupsInConflict: string[] = []
+    // const classGroupsInConflict = new Set<string>()
 
+    // let result: string[] = []
     let result = ''
 
     let currentClass = ''
     for (let i = classList.length - 1; i >= 0; --i) {
         const char = classList[i]!
-        const isSpace = SPLIT_CLASSES_REGEX.test(char)
+        // more performant than Regex check - suitable for our case
+        const isSpace = char === ' '
         if (!isSpace) {
             currentClass = char + currentClass
             if (i !== 0) continue
@@ -44,6 +47,7 @@ export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
         if (!classGroupId) {
             if (!hasPostfixModifier) {
                 result = originalClassName + (result.length > 0 ? ' ' + result : result)
+                // result.push(originalClassName)
                 continue
             }
 
@@ -51,6 +55,7 @@ export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
 
             if (!classGroupId) {
                 result = originalClassName + (result.length > 0 ? ' ' + result : result)
+                // result.push(originalClassName)
                 continue
             }
 
@@ -65,23 +70,24 @@ export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
 
         const classId = modifierId + classGroupId
 
-        // [TODO]: consider using arrays
-        if (classGroupsInConflict.has(classId)) {
+        if (classGroupsInConflict.includes(classId)) {
             continue
         }
 
-        classGroupsInConflict.add(classId)
+        classGroupsInConflict.push(classId)
 
         const conflictGroups = getConflictingClassGroupIds(classGroupId, hasPostfixModifier)
         for (let i = 0; i < conflictGroups.length; ++i) {
             const group = conflictGroups[i]!
-            classGroupsInConflict.add(modifierId + group)
+            classGroupsInConflict.push(modifierId + group)
         }
 
+        // result.push(originalClassName)
         result = originalClassName + (result.length > 0 ? ' ' + result : result)
     }
 
     return result
+    // return result.join(' ')
 }
 
 export function mergeClassList2(classList: string, configUtils: ConfigUtils) {
