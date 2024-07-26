@@ -59,15 +59,15 @@
         "version": "zx scripts/update-readme.mjs",
         "postversion": "if [ -n \"$DANYS_MACHINE\" ]; then git push --follow-tags && open https://github.com/dcastil/tailwind-merge/releases; fi"
     },
-    "dependencies": {
-        "jest-bench": "^29.7.1"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@babel/core": "^7.24.7",
         "@babel/preset-env": "^7.24.7",
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-typescript": "^11.1.6",
+        "@swc-node/register": "^1.10.9",
+        "@swc/core": "^1.7.2",
         "@types/jest": "^29.5.12",
         "@typescript-eslint/eslint-plugin": "^7.14.1",
         "@typescript-eslint/parser": "^7.14.1",
@@ -82,6 +82,7 @@
         "rollup": "^4.18.0",
         "rollup-plugin-delete": "^2.0.0",
         "rollup-plugin-dts": "^6.1.1",
+        "tinybench": "^2.8.0",
         "ts-jest": "^29.1.5",
         "tslib": "^2.6.3",
         "typescript": "^5.5.2",

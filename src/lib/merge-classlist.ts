@@ -3,98 +3,98 @@ import { IMPORTANT_MODIFIER, sortModifiers } from './parse-class-name'
 
 const SPLIT_CLASSES_REGEX = /\s+/
 
-export const mergeClassListOriginal  = (classList: string, configUtils: ConfigUtils) => {
-  const { parseClassName, getClassGroupId, getConflictingClassGroupIds } = configUtils
+export const mergeClassListOriginal = (classList: string, configUtils: ConfigUtils) => {
+    const { parseClassName, getClassGroupId, getConflictingClassGroupIds } = configUtils
 
-  /**
-   * Set of classGroupIds in following format:
-   * `{importantModifier}{variantModifiers}{classGroupId}`
-   * @example 'float'
-   * @example 'hover:focus:bg-color'
-   * @example 'md:!pr'
-   */
-  const classGroupsInConflict = new Set<string>()
+    /**
+     * Set of classGroupIds in following format:
+     * `{importantModifier}{variantModifiers}{classGroupId}`
+     * @example 'float'
+     * @example 'hover:focus:bg-color'
+     * @example 'md:!pr'
+     */
+    const classGroupsInConflict = new Set<string>()
 
-  return (
-      classList
-          .trim()
-          .split(SPLIT_CLASSES_REGEX)
-          .map((originalClassName) => {
-              const {
-                  modifiers,
-                  hasImportantModifier,
-                  baseClassName,
-                  maybePostfixModifierPosition,
-              } = parseClassName(originalClassName)
+    return (
+        classList
+            .trim()
+            .split(SPLIT_CLASSES_REGEX)
+            .map((originalClassName) => {
+                const {
+                    modifiers,
+                    hasImportantModifier,
+                    baseClassName,
+                    maybePostfixModifierPosition,
+                } = parseClassName(originalClassName)
 
-              let hasPostfixModifier = Boolean(maybePostfixModifierPosition)
-              let classGroupId = getClassGroupId(
-                  hasPostfixModifier
-                      ? baseClassName.substring(0, maybePostfixModifierPosition)
-                      : baseClassName,
-              )
+                let hasPostfixModifier = Boolean(maybePostfixModifierPosition)
+                let classGroupId = getClassGroupId(
+                    hasPostfixModifier
+                        ? baseClassName.substring(0, maybePostfixModifierPosition)
+                        : baseClassName,
+                )
 
-              if (!classGroupId) {
-                  if (!hasPostfixModifier) {
-                      return {
-                          isTailwindClass: false as const,
-                          originalClassName,
-                      }
-                  }
+                if (!classGroupId) {
+                    if (!hasPostfixModifier) {
+                        return {
+                            isTailwindClass: false as const,
+                            originalClassName,
+                        }
+                    }
 
-                  classGroupId = getClassGroupId(baseClassName)
+                    classGroupId = getClassGroupId(baseClassName)
 
-                  if (!classGroupId) {
-                      return {
-                          isTailwindClass: false as const,
-                          originalClassName,
-                      }
-                  }
+                    if (!classGroupId) {
+                        return {
+                            isTailwindClass: false as const,
+                            originalClassName,
+                        }
+                    }
 
-                  hasPostfixModifier = false
-              }
+                    hasPostfixModifier = false
+                }
 
-              const variantModifier = sortModifiers(modifiers).join(':')
+                const variantModifier = sortModifiers(modifiers).join(':')
 
-              const modifierId = hasImportantModifier
-                  ? variantModifier + IMPORTANT_MODIFIER
-                  : variantModifier
+                const modifierId = hasImportantModifier
+                    ? variantModifier + IMPORTANT_MODIFIER
+                    : variantModifier
 
-              return {
-                  isTailwindClass: true as const,
-                  modifierId,
-                  classGroupId,
-                  originalClassName,
-                  hasPostfixModifier,
-              }
-          })
-          .reverse()
-          // Last class in conflict wins, so we need to filter conflicting classes in reverse order.
-          .filter((parsed) => {
-              if (!parsed.isTailwindClass) {
-                  return true
-              }
+                return {
+                    isTailwindClass: true as const,
+                    modifierId,
+                    classGroupId,
+                    originalClassName,
+                    hasPostfixModifier,
+                }
+            })
+            .reverse()
+            // Last class in conflict wins, so we need to filter conflicting classes in reverse order.
+            .filter((parsed) => {
+                if (!parsed.isTailwindClass) {
+                    return true
+                }
 
-              const { modifierId, classGroupId, hasPostfixModifier } = parsed
+                const { modifierId, classGroupId, hasPostfixModifier } = parsed
 
-              const classId = modifierId + classGroupId
+                const classId = modifierId + classGroupId
 
-              if (classGroupsInConflict.has(classId)) {
-                  return false
-              }
+                if (classGroupsInConflict.has(classId)) {
+                    return false
+                }
 
-              classGroupsInConflict.add(classId)
+                classGroupsInConflict.add(classId)
 
-              getConflictingClassGroupIds(classGroupId, hasPostfixModifier).forEach((group) =>
-                  classGroupsInConflict.add(modifierId + group),
-              )
+                getConflictingClassGroupIds(classGroupId, hasPostfixModifier).forEach((group) =>
+                    classGroupsInConflict.add(modifierId + group),
+                )
 
-              return true
-          })
-          .reverse()
-          .map((parsed) => parsed.originalClassName)
-          .join(' ')
-  )
+                return true
+            })
+            .reverse()
+            .map((parsed) => parsed.originalClassName)
+            .join(' ')
+    )
 }
 
 export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
@@ -113,20 +113,14 @@ export const mergeClassList = (classList: string, configUtils: ConfigUtils) => {
     // let result: string[] = []
     let result = ''
 
-    let currentClass = ''
-    for (let i = classList.length - 1; i >= 0; --i) {
-        const char = classList[i]!
-        // more performant than Regex check - suitable for our case
-        const isSpace = char === ' '
-        if (!isSpace) {
-            currentClass = char + currentClass
-            if (i !== 0) continue
-        } else if (currentClass.length === 0) {
-            continue
+    for (let i = classList.length - 1; i >= 0; ) {
+        while (classList[i] === ' ') {
+            --i
         }
-
-        const originalClassName = currentClass
-        currentClass = ''
+        const nextI = classList.lastIndexOf(' ', i)
+        const originalClassName =
+            classList.slice(nextI === - 1 ? 0 : nextI + 1, i + 1)
+        i = nextI
 
         const { modifiers, hasImportantModifier, baseClassName, maybePostfixModifierPosition } =
             parseClassName(originalClassName)
